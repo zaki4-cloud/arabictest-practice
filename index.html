@@ -1,0 +1,1167 @@
+```html
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>חזרה לקראת מבחן בערבית</title>
+    <!-- טעינת Tailwind CSS לעיצוב רספונסיבי ומודרני -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- טעינת גופנים ברורים לעברית (Rubik/Assistant) ופונט ערבי גדול וקריא במיוחד (Noto Sans Arabic / Amiri) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@500;700;800&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Rubik', 'sans-serif'],
+                        arabic: ['Noto Sans Arabic', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* הגדרות בסיס ואנימציות להיפוך כרטיסיות ומשוב */
+        body {
+            background-color: #f4f7fb;
+            color: #1e293b;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            height: 100dvh;
+            max-height: 100dvh;
+            overflow: hidden;
+        }
+
+        .arabic-text {
+            font-family: 'Noto Sans Arabic', sans-serif;
+            direction: rtl;
+            line-height: 1.6;
+        }
+
+        /* אנימציית היפוך תלת-ממדית לכרטיסיות הזיכרון */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+
+        /* אנימציית רעידה לטעות בחיבור קוביות */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        /* אנימציית קפיצה קלה להצלחה */
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+            100% { transform: scale(1); }
+        }
+        .animate-pop {
+            animation: pop 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="h-[100dvh] max-h-[100dvh] overflow-hidden flex flex-col font-sans">
+
+    <!-- סרגל עליון קומפקטי (Header) -->
+    <header class="bg-gradient-to-l from-indigo-700 via-blue-700 to-teal-600 text-white shadow-md shrink-0 z-30">
+        <div class="max-w-4xl mx-auto px-3 py-2 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="bg-white/20 px-2 py-1 rounded-lg backdrop-blur-sm">
+                    <span class="arabic-text text-lg font-bold leading-none">عَرَبِي</span>
+                </div>
+                <div>
+                    <h1 class="text-sm sm:text-base font-bold tracking-tight leading-tight">חזרה לקראת מבחן בערבית</h1>
+                    <p class="text-[11px] text-blue-100 leading-tight">5 ימי תרגול ממוקדים</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-1.5">
+                <button id="sound-toggle-btn" onclick="toggleSound()" title="הפעלה/השתקת צליל" class="bg-white/15 hover:bg-white/25 text-white text-xs p-1.5 rounded-lg transition">
+                    🔊
+                </button>
+                <button id="home-btn" onclick="goHome()" class="hidden bg-white/15 hover:bg-white/25 active:bg-white/30 text-white text-xs font-medium px-2.5 py-1.5 rounded-lg transition flex items-center gap-1">
+                    <span>לימים</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- תוכן מרכזי מתחלף מותאם לגובה מסך יחיד -->
+    <main id="app-container" class="flex-1 min-h-0 max-w-4xl w-full mx-auto px-3 py-2 flex flex-col justify-between overflow-hidden">
+        <!-- התוכן יוזרק כאן דינמית באמצעות JavaScript -->
+    </main>
+
+    <!-- חלון משוב קופץ (Modal) לשאלות אמריקאיות כדי למנוע גלילה -->
+    <div id="feedback-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+        <div id="feedback-modal-card" class="bg-white rounded-3xl max-w-sm w-full p-5 shadow-2xl border-2 text-center space-y-3 animate-pop">
+            <!-- תוכן המשוב יוזרק כאן -->
+        </div>
+    </div>
+
+    <!-- לוגיקה ונתונים של האפליקציה -->
+    <script>
+        /**
+         * מנוע צלילים עדין (Web Audio API) לחיווי חיובי ללא צורך בקבצים חיצוניים
+         */
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const btn = document.getElementById('sound-toggle-btn');
+            if (btn) btn.textContent = soundEnabled ? '🔊' : '🔇';
+        }
+
+        function playSuccessSound(type = 'match') {
+            if (!soundEnabled) return;
+            try {
+                if (!audioCtx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    audioCtx = new AudioContext();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                const now = audioCtx.currentTime;
+                // תווים נעימים: אקורד קצר לחיבור, וארפג'יו משמח לסיום
+                const notes = type === 'complete' ? [523.25, 659.25, 783.99, 1046.50] : [587.33, 880.00];
+                
+                notes.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+
+                    gain.gain.setValueAtTime(0.001, now + idx * 0.08);
+                    gain.gain.exponentialRampToValueAtTime(0.14, now + idx * 0.08 + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.25);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+
+                    osc.start(now + idx * 0.08);
+                    osc.stop(now + idx * 0.08 + 0.28);
+                });
+            } catch (e) {
+                // התעלמות שקטה במקרה שהדפדפן חוסם שמע
+            }
+        }
+
+        /**
+         * מאגר הנתונים המלא ל-5 ימי התרגול
+         */
+        const DAYS_DATA = [
+            {
+                dayNumber: 1,
+                title: "יום 1: אותיות ראשונות ומילות משפחה",
+                subtitle: "אליף, רא, זאי, דאל + 3 מילים",
+                duration: "כ-12 דק'",
+                badgeColor: "from-blue-500 to-indigo-600",
+                flashcards: [
+                    { front: "ا", back: "אַלִיף", hint: "האות הראשונה באלפבית. אינה מתחברת לאות שאחריה." },
+                    { front: "ر", back: "רָא", hint: "אות יורדת מתחת לשורה. אינה מתחברת משמאל." },
+                    { front: "ز", back: "זַאי", hint: "דומה ל-רָא, אך יש נקודה אחת מעליה." },
+                    { front: "د", back: "דָאל", hint: "יושבת על השורה, אינה מתחברת לאות שאחריה." },
+                    { front: "بِنْت", back: "בַּת", hint: "שימו לב ל-כַּסְרַה מתחת לאות בַּא" },
+                    { front: "إِبْن", back: "בֵּן", hint: "מתחילה ב-אַלִיף עם המזה וכַּסְרַה מלמטה" },
+                    { front: "دَار", back: "בַּיִת / מִשְׁפָּחָה", hint: "מורכבת מ-דָאל, אַלִיף ו-רָא" }
+                ],
+                matchingPairs: [
+                    { id: "d1_1", arabic: "ا", hebrew: "אַלִיף" },
+                    { id: "d1_2", arabic: "ر", hebrew: "רָא" },
+                    { id: "d1_3", arabic: "ز", hebrew: "זַאי" },
+                    { id: "d1_4", arabic: "د", hebrew: "דָאל" },
+                    { id: "d1_5", arabic: "بِنْت", hebrew: "בַּת" },
+                    { id: "d1_6", arabic: "إِبْن", hebrew: "בֵּן" },
+                    { id: "d1_7", arabic: "دَار", hebrew: "בַּיִת / מִשְׁפָּחָה" }
+                ],
+                quiz: [
+                    {
+                        question: "מהו שמה של האות המודגשת בערבית?",
+                        arabicDisplay: "ز",
+                        options: ["רָא", "זַאי", "דָאל", "אַלִיף"],
+                        correctIndex: 1,
+                        explanation: "האות ز היא זַאי (עם נקודה מעליה), בניגוד ל-ر (רָא) שאין לה נקודה."
+                    },
+                    {
+                        question: "מהו התרגום הנכון לעברית של המילה:",
+                        arabicDisplay: "دَار",
+                        options: ["בֵּן", "דֶּלֶת", "בַּיִת / מִשְׁפָּחָה", "בַּת"],
+                        correctIndex: 2,
+                        explanation: "המילה دَار פירושה בַּיִת / מִשְׁפָּחָה."
+                    },
+                    {
+                        question: "איזו אות מופיעה בתחילת המילה שלפנינו?",
+                        arabicDisplay: "دَار",
+                        options: ["דָאל", "זַאי", "רָא", "אַלִיף"],
+                        correctIndex: 0,
+                        explanation: "בערבית קוראים מימין לשמאל – האות הימנית ביותר היא د (דָאל)."
+                    },
+                    {
+                        question: "מהו שמה של האות הבאה?",
+                        arabicDisplay: "ر",
+                        options: ["דָאל", "זַאי", "אַלִיף", "רָא"],
+                        correctIndex: 3,
+                        explanation: "האות ر היא רָא."
+                    },
+                    {
+                        question: "מה פירוש המילה בערבית?",
+                        arabicDisplay: "إِبْن",
+                        options: ["בַּת", "בֵּן", "בַּיִת", "אוֹר"],
+                        correctIndex: 1,
+                        explanation: "إِبْن פירושה בֵּן (לעומת بِنْت שפירושה בַּת)."
+                    },
+                    {
+                        question: "איזו מילה בערבית מתורגמת ל-'בַּת'?",
+                        arabicDisplay: "؟",
+                        options: ["دَار", "إِبْن", "بِنْت", "زَار"],
+                        correctIndex: 2,
+                        explanation: "بِنْت מתורגמת ל-בַּת."
+                    }
+                ]
+            },
+            {
+                dayNumber: 2,
+                title: "יום 2: ואו, ד'אל, בא וזיהוי במילים",
+                subtitle: "האותיות و, ذ, ب + بَيْت, بَاب, وِدَاد",
+                duration: "כ-12 דק'",
+                badgeColor: "from-teal-500 to-emerald-600",
+                flashcards: [
+                    { front: "و", back: "וַאו", hint: "בעלת ראש עגול וזנב יורד. אינה מתחברת משמאל." },
+                    { front: "ذ", back: "ד'אל", hint: "דומה ל-דָאל, אך עם נקודה אחת מעליה." },
+                    { front: "ب", back: "בַּא", hint: "קערה רחבה עם נקודה אחת מתחתיה." },
+                    { front: "بَيْت", back: "בַּיִת", hint: "מתחילה ב-בַּא ומסתיימת ב-תַא" },
+                    { front: "بَاب", back: "דֶּלֶת", hint: "מתחילה ומסתיימת באות בַּא" },
+                    { front: "وِدَاد", back: "יְדִידוּת / שֵׁם בַּת", hint: "מתחילה ב-וַאו ויש בה פעמיים דָאל" }
+                ],
+                matchingPairs: [
+                    { id: "d2_1", arabic: "و", hebrew: "וַאו" },
+                    { id: "d2_2", arabic: "ذ", hebrew: "ד'אל" },
+                    { id: "d2_3", arabic: "ب", hebrew: "בַּא" },
+                    { id: "d2_4", arabic: "بَيْت", hebrew: "בַּיִת" },
+                    { id: "d2_5", arabic: "بَاب", hebrew: "דֶּלֶת" },
+                    { id: "d2_6", arabic: "وِدَاد", hebrew: "יְדִידוּת / שֵׁם בַּת" }
+                ],
+                quiz: [
+                    {
+                        question: "איזו אות מופיעה גם בהתחלה וגם בסוף של המילה:",
+                        arabicDisplay: "بَاب",
+                        options: ["תַא", "בַּא", "נוּן", "דָאל"],
+                        correctIndex: 1,
+                        explanation: "במילה بَاب מופיעה האות בַּא (ب) גם בהתחלה (بَـ) וגם בסוף (ب)."
+                    },
+                    {
+                        question: "מהו התרגום של המילה:",
+                        arabicDisplay: "بَاب",
+                        options: ["בַּיִת", "דֶּלֶת", "בַּת", "וֶרֶד"],
+                        correctIndex: 1,
+                        explanation: "המילה بَاب פירושה דֶּלֶת."
+                    },
+                    {
+                        question: "מהו שמה של האות המופיעה לפנינו?",
+                        arabicDisplay: "ذ",
+                        options: ["דָאל", "זַאי", "ד'אל", "וַאו"],
+                        correctIndex: 2,
+                        explanation: "האות ذ עם הנקודה מעליה נקראת ד'אל."
+                    },
+                    {
+                        question: "איזו אות מופיעה בתחילת המילה:",
+                        arabicDisplay: "وِدَاد",
+                        options: ["רָא", "דָאל", "וַאו", "אַלִיף"],
+                        correctIndex: 2,
+                        explanation: "האות הראשונה מימין במילה وِدَاد היא و (וַאו)."
+                    },
+                    {
+                        question: "מה פירוש המילה בערבית?",
+                        arabicDisplay: "وِدَاد",
+                        options: ["דֶּלֶת", "יְדִידוּת / שֵׁם בַּת", "דְּרוּזִים", "בֵּן"],
+                        correctIndex: 1,
+                        explanation: "وِدَاد פירושה יְדִידוּת (ומשמשת גם כשם פרטי לבת)."
+                    },
+                    {
+                        question: "איזו מילה בערבית מתורגמת ל-'בַּיִת'?",
+                        arabicDisplay: "؟",
+                        options: ["بَاب", "بِنْت", "بَيْت", "إِبْن"],
+                        correctIndex: 2,
+                        explanation: "המילה بَيْت פירושה בַּיִת."
+                    }
+                ]
+            },
+            {
+                dayNumber: 3,
+                title: "יום 3: תא, ת'א, נון, יא ופירוק מילים",
+                subtitle: "האותיות ت, ث, ن, ي + دُرُوز, أَرْز, وَرْد",
+                duration: "כ-15 דק'",
+                badgeColor: "from-purple-500 to-violet-600",
+                flashcards: [
+                    { front: "ت", back: "תַא", hint: "קערה עם שתי נקודות בתוכה מלמעלה." },
+                    { front: "ث", back: "ת'א", hint: "קערה עם שלוש נקודות מעליה." },
+                    { front: "ن", back: "נוּן", hint: "קערה עמוקה עם נקודה אחת בתוכה מלמעלה." },
+                    { front: "ي", back: "יַא", hint: "אות עם שתי נקודות מתחתיה." },
+                    { front: "دُرُوز", back: "דְּרוּזִים", hint: "אותיות: דָאל, רָא, וַאו, זַאי" },
+                    { front: "أَرْز", back: "אֲרָזִים", hint: "אותיות: אַלִיף, רָא, זַאי" },
+                    { front: "وَرْد", back: "וְרָדִים", hint: "אותיות: וַאו, רָא, דָאל" }
+                ],
+                matchingPairs: [
+                    { id: "d3_1", arabic: "ت", hebrew: "תַא" },
+                    { id: "d3_2", arabic: "ث", hebrew: "ת'א" },
+                    { id: "d3_3", arabic: "ن", hebrew: "נוּן" },
+                    { id: "d3_4", arabic: "ي", hebrew: "יַא" },
+                    { id: "d3_5", arabic: "دُرُوز", hebrew: "דְּרוּזִים" },
+                    { id: "d3_6", arabic: "أَرْز", hebrew: "אֲרָזִים" },
+                    { id: "d3_7", arabic: "وَرْد", hebrew: "וְרָדִים" }
+                ],
+                quiz: [
+                    {
+                        question: "פרקו את המילה לאותיותיה לפי סדר הופעתן (מימין לשמאל):",
+                        arabicDisplay: "دُرُوز",
+                        options: [
+                            "דָאל, רָא, וַאו, זַאי",
+                            "זַאי, וַאו, רָא, דָאל",
+                            "ד'אל, זַאי, וַאו, רָא",
+                            "דָאל, וַאו, רָא, זַאי"
+                        ],
+                        correctIndex: 0,
+                        explanation: "מימין לשמאל: د (דָאל), ر (רָא), و (וַאו), ز (זַאי)."
+                    },
+                    {
+                        question: "פרקו את המילה לאותיותיה לפי סדר הופעתן:",
+                        arabicDisplay: "وَرْد",
+                        options: [
+                            "רָא, וַאו, דָאל",
+                            "וַאו, רָא, דָאל",
+                            "וַאו, זַאי, ד'אל",
+                            "דָאל, רָא, וַאו"
+                        ],
+                        correctIndex: 1,
+                        explanation: "האותיות הן: و (וַאו), ر (רָא), د (דָאל)."
+                    },
+                    {
+                        question: "מהו ההבדל בין האות ت לבין האות ي?",
+                        arabicDisplay: "ت  /  ي",
+                        options: [
+                            "ל-ت יש 2 נקודות למעלה, ול-ي יש 2 נקודות למטה",
+                            "ל-ت יש נקודה אחת, ול-ي יש 3 נקודות",
+                            "ל-ت יש 3 נקודות למעלה, ול-ي יש נקודה למטה",
+                            "אין הבדל ביניהן"
+                        ],
+                        correctIndex: 0,
+                        explanation: "באות ت (תַא) הנקודות מעל האות, ובאות ي (יַא) שתי הנקודות מתחת לאות."
+                    },
+                    {
+                        question: "מהו התרגום לעברית של המילה:",
+                        arabicDisplay: "أَرْز",
+                        options: ["וְרָדִים", "דְּרוּזִים", "אֲרָזִים", "זֵיתִים"],
+                        correctIndex: 2,
+                        explanation: "أَرْز פירושה אֲרָזִים."
+                    },
+                    {
+                        question: "פרקו את המילה בִּנְת לאותיותיה לפי סדר הופעתן:",
+                        arabicDisplay: "بِنْت",
+                        options: [
+                            "נוּן, בַּא, תַא",
+                            "בַּא, תַא, נוּן",
+                            "בַּא, נוּן, תַא",
+                            "תַא, נוּן, בַּא"
+                        ],
+                        correctIndex: 2,
+                        explanation: "מימין לשמאל: بـ (בַּא), ـنـ (נוּן), ـت (תַא)."
+                    },
+                    {
+                        question: "מהו התרגום של המילה:",
+                        arabicDisplay: "وَرْد",
+                        options: ["אוֹר", "וְרָדִים", "דֶּלֶת", "בֵּן"],
+                        correctIndex: 1,
+                        explanation: "وَرْد פירושה וְרָדִים."
+                    }
+                ]
+            },
+            {
+                dayNumber: 4,
+                title: "יום 4: התנועות בערבית (חַרַכָּאת)",
+                subtitle: "צירופי אות + תנועה + زَار, زَيْتُون, نُور",
+                duration: "כ-15 דק'",
+                badgeColor: "from-amber-500 to-orange-600",
+                flashcards: [
+                    { front: "بَ", back: "בַּא + פַתְחַה (הצליל: בַּ)", hint: "קו קטן מעל האות בַּא יוצר את הצליל בַּ (ba)." },
+                    { front: "بِ", back: "בַּא + כַּסְרַה (הצליל: בִּ)", hint: "קו קטן מתחת לאות בַּא יוצר את הצליל בִּ (bi)." },
+                    { front: "بُ", back: "בַּא + דַמַה (הצליל: בֻּ)", hint: "צורת ו' קטנה מעל האות בַּא יוצרת את הצליל בֻּ (bu)." },
+                    { front: "بْ", back: "בַּא + סֻכּוּן (בְּ – עצירה)", hint: "עיגול קטן מעל האות עוצר את הצליל ללא תנועה (שווא נח)." },
+                    { front: "زَار", back: "בִּקֵּר", hint: "מתחילה ב-זַאי + פַתְחַה (הצליל: זַ)" },
+                    { front: "زَيْتُون", back: "זֵיתִים", hint: "כוללת יַא + סֻכּוּן (יְ) ו-תַא + דַמַה (תֻ)" },
+                    { front: "نُور", back: "אוֹר", hint: "מתחילה ב-נוּן + דַמַה (הצליל: נֻ)" }
+                ],
+                matchingPairs: [
+                    { id: "d4_1", arabic: "بَ", hebrew: "בַּא + פַתְחַה (בַּ)" },
+                    { id: "d4_2", arabic: "بِ", hebrew: "בַּא + כַּסְרַה (בִּ)" },
+                    { id: "d4_3", arabic: "بُ", hebrew: "בַּא + דַמַה (בֻּ)" },
+                    { id: "d4_4", arabic: "بْ", hebrew: "בַּא + סֻכּוּן (בְּ)" },
+                    { id: "d4_5", arabic: "زَار", hebrew: "בִּקֵּר" },
+                    { id: "d4_6", arabic: "زَيْتُون", hebrew: "זֵיתִים" },
+                    { id: "d4_7", arabic: "نُور", hebrew: "אוֹר" }
+                ],
+                quiz: [
+                    {
+                        question: "איך נכתוב בערבית את הצירוף: בַּא + כַּסְרַה (הצליל בִּ)?",
+                        arabicDisplay: "בַּא + כַּסְרַה",
+                        options: ["بَ", "بُ", "بِ", "بْ"],
+                        correctIndex: 2,
+                        explanation: "כַּסְרַה היא קו קטן מתחת לאות בַּא: بِ (הצליל בִּ)."
+                    },
+                    {
+                        question: "איזה צירוף מופיע באמצע המילה שלפנינו (רָא + עיגול קטן)?",
+                        arabicDisplay: "وَرْد",
+                        options: ["רָא + פַתְחַה (רַ)", "רָא + דַמַה (רֻ)", "רָא + כַּסְרַה (רִ)", "רָא + סֻכּוּן (רְ)"],
+                        correctIndex: 3,
+                        explanation: "העיגול הקטן מעל האות רָא (رْ) הוא סֻכּוּן והצליל הוא רְ (עצירה)."
+                    },
+                    {
+                        question: "איך נכתוב בערבית: דָאל + דַמַה (הצליל דֻּ)?",
+                        arabicDisplay: "דָאל + דַמַה",
+                        options: ["دُ", "دَ", "دِ", "دْ"],
+                        correctIndex: 0,
+                        explanation: "דַמַה היא סימן דמוי ו' קטנה מעל האות דָאל: دُ (הצליל דֻּ)."
+                    },
+                    {
+                        question: "מהו הצליל של הצירוף שלפנינו?",
+                        arabicDisplay: "بَ",
+                        options: ["בִּ (בַּא + כַּסְרַה)", "בַּ (בַּא + פַתְחַה)", "בֻּ (בַּא + דַמַה)", "בְּ (בַּא + סֻכּוּן)"],
+                        correctIndex: 1,
+                        explanation: "קו קטן מעל האות בַּא הוא פַתְחַה, ולכן הצליל הוא בַּ."
+                    },
+                    {
+                        question: "מה פירוש המילה בערבית?",
+                        arabicDisplay: "زَيْتُون",
+                        options: ["וְרָדִים", "זֵיתִים", "אֲרָזִים", "בִּקֵּר"],
+                        correctIndex: 1,
+                        explanation: "زَيْتُون פירושה זֵיתִים."
+                    },
+                    {
+                        question: "מהו התרגום של המילה:",
+                        arabicDisplay: "نُور",
+                        options: ["בֵּן", "בִּקֵּר", "אוֹר", "שַׂר"],
+                        correctIndex: 2,
+                        explanation: "نُور פירושה אוֹר (מתחילה ב-נוּן + דַמַה = נֻ)."
+                    }
+                ]
+            },
+            {
+                dayNumber: 5,
+                title: "יום 5: חזרה מסכמת, תעתיק ופירוק מילים",
+                subtitle: "מילות גוף ותפקידים: أَنَا, أَنْتَ, أَنْتِ, وَزِير",
+                duration: "כ-15 דק'",
+                badgeColor: "from-rose-500 to-pink-600",
+                flashcards: [
+                    { front: "أَنَا", back: "אֲנִי", hint: "מתחילה ומסתיימת באות אַלִיף." },
+                    { front: "أَنْتَ", back: "אַתָּה", hint: "תַא + פַתְחַה בסוף (הצליל: תַ)." },
+                    { front: "أَنْتِ", back: "אַתְּ", hint: "תַא + כַּסְרַה בסוף (הצליל: תִ)." },
+                    { front: "وَزِير", back: "שַׂר בַּמֶּמְשָׁלָה", hint: "אותיות: וַאו, זַאי, יַא, רָא." },
+                    { front: "زَيْتُون", back: "תעתיק: זַיְתוּן", hint: "פירוק: זַאי, יַא, תַא, וַאו, נוּן." },
+                    { front: "وَزِير", back: "תעתיק: וַזִיר", hint: "פירוק: וַאו, זַאי, יַא, רָא." }
+                ],
+                matchingPairs: [
+                    { id: "d5_1", arabic: "أَنَا", hebrew: "אֲנִי" },
+                    { id: "d5_2", arabic: "أَنْتَ", hebrew: "אַתָּה" },
+                    { id: "d5_3", arabic: "أَنْتِ", hebrew: "אַתְּ" },
+                    { id: "d5_4", arabic: "وَزِير", hebrew: "שַׂר בַּמֶּמְשָׁלָה" },
+                    { id: "d5_5", arabic: "زَيْتُون", hebrew: "תעתיק: זַיְתוּן" },
+                    { id: "d5_6", arabic: "دُرُوز", hebrew: "תעתיק: דֻרוּז" }
+                ],
+                quiz: [
+                    {
+                        question: "מהו התעתיק (הקריאה בעברית) של המילה:",
+                        arabicDisplay: "وَزِير",
+                        options: ["וַזִיר", "זַאִיר", "וַרְדִּי", "דַּארוּז"],
+                        correctIndex: 0,
+                        explanation: "האותיות הן و (וַ), زِ (זִי), ي (אֵם קריאה), ر (ר) -> וַזִיר (שַׂר)."
+                    },
+                    {
+                        question: "מה ההבדל בין أَنْتَ לבין أَنْتِ?",
+                        arabicDisplay: "أَنْتَ  /  أَنْتِ",
+                        options: [
+                            "أَنْتَ זה אַתָּה (תַא+פַתְחַה), ו-أَنْتِ זה אַתְּ (תַא+כַּסְרַה)",
+                            "أَنْتَ זה אֲנִי, ו-أَنْتِ זה אַתָּה",
+                            "أَنْتَ זה בֵּן, ו-أَنْتِ זה בַּת",
+                            "אין הבדל במשמעות"
+                        ],
+                        correctIndex: 0,
+                        explanation: "התנועה בסוף קובעת: תַא + פַתְחַה (تَ) לזכר – אַתָּה, ותַא + כַּסְרַה (تِ) לנקבה – אַתְּ."
+                    },
+                    {
+                        question: "פרקו את המילה לאותיותיה לפי סדר הופעתן:",
+                        arabicDisplay: "وَزِير",
+                        options: [
+                            "וַאו, רָא, יַא, זַאי",
+                            "וַאו, זַאי, יַא, רָא",
+                            "זַאי, וַאו, יַא, רָא",
+                            "וַאו, ד'אל, תַא, רָא"
+                        ],
+                        correctIndex: 1,
+                        explanation: "מימין לשמאל: و (וַאו), ز (זַאי), يـ (יַא), ـر (רָא)."
+                    },
+                    {
+                        question: "מהו התעתיק המדויק של המילה:",
+                        arabicDisplay: "زَيْتُون",
+                        options: ["זַיְתוּן", "זַארְתוּן", "וַזִיר", "נַיְתוּן"],
+                        correctIndex: 0,
+                        explanation: "زَ (זַ), يْ (יְ), تُو (תוּ), ن (ן) -> זַיְתוּן (זֵיתִים)."
+                    },
+                    {
+                        question: "מהו התרגום לעברית של המילה:",
+                        arabicDisplay: "أَنَا",
+                        options: ["אַתָּה", "אַתְּ", "אֲנִי", "אוֹר"],
+                        correctIndex: 2,
+                        explanation: "أَنَا פירושה אֲנִי."
+                    },
+                    {
+                        question: "פרקו את המילה לאותיותיה לפי סדר הופעתן:",
+                        arabicDisplay: "بَيْت",
+                        options: [
+                            "בַּא, נוּן, תַא",
+                            "תַא, יַא, בַּא",
+                            "בַּא, יַא, תַא",
+                            "יַא, בַּא, תַא"
+                        ],
+                        correctIndex: 2,
+                        explanation: "מימין לשמאל: بـ (בַּא), ـيـ (יַא), ـت (תַא)."
+                    }
+                ]
+            }
+        ];
+
+        // ניהול מצב האפליקציה (State)
+        let state = {
+            currentView: 'home',
+            selectedDayIndex: 0,
+            activeTab: 'flashcards',
+            
+            cardIndex: 0,
+            isCardFlipped: false,
+            
+            matchingRightItems: [],
+            matchingLeftItems: [],
+            selectedRightId: null,
+            selectedLeftId: null,
+            matchedIds: [],
+            wrongPair: false,
+            matchingMistakes: 0,
+
+            quizIndex: 0,
+            selectedOptionIndex: null,
+            isAnswerChecked: false,
+            quizScore: 0,
+
+            completedDays: JSON.parse(localStorage.getItem('arabicPrepProgress_v2') || '{}')
+        };
+
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function closeFeedbackModal() {
+            document.getElementById('feedback-modal').classList.add('hidden');
+        }
+
+        function goHome() {
+            closeFeedbackModal();
+            state.currentView = 'home';
+            document.getElementById('home-btn').classList.add('hidden');
+            render();
+        }
+
+        function startDay(dayIndex) {
+            closeFeedbackModal();
+            state.selectedDayIndex = dayIndex;
+            state.currentView = 'day';
+            document.getElementById('home-btn').classList.remove('hidden');
+            switchTab('flashcards');
+        }
+
+        function switchTab(tabName) {
+            closeFeedbackModal();
+            state.activeTab = tabName;
+            const dayData = DAYS_DATA[state.selectedDayIndex];
+
+            if (tabName === 'flashcards') {
+                state.cardIndex = 0;
+                state.isCardFlipped = false;
+            } else if (tabName === 'matching') {
+                initMatchingGame(dayData.matchingPairs);
+            } else if (tabName === 'quiz') {
+                state.quizIndex = 0;
+                state.selectedOptionIndex = null;
+                state.isAnswerChecked = false;
+                state.quizScore = 0;
+            }
+            render();
+        }
+
+        function initMatchingGame(pairs) {
+            state.matchingRightItems = shuffleArray(pairs.map(p => ({ id: p.id, text: p.arabic })));
+            state.matchingLeftItems = shuffleArray(pairs.map(p => ({ id: p.id, text: p.hebrew })));
+            state.selectedRightId = null;
+            state.selectedLeftId = null;
+            state.matchedIds = [];
+            state.wrongPair = false;
+            state.matchingMistakes = 0;
+        }
+
+        function toggleCardFlip() {
+            state.isCardFlipped = !state.isCardFlipped;
+            render();
+        }
+
+        function nextCard() {
+            const total = DAYS_DATA[state.selectedDayIndex].flashcards.length;
+            if (state.cardIndex < total - 1) {
+                state.cardIndex++;
+                state.isCardFlipped = false;
+                render();
+            } else {
+                playSuccessSound('match');
+                switchTab('matching');
+            }
+        }
+
+        function prevCard() {
+            if (state.cardIndex > 0) {
+                state.cardIndex--;
+                state.isCardFlipped = false;
+                render();
+            }
+        }
+
+        function selectMatchingItem(side, id) {
+            if (state.matchedIds.includes(id) || state.wrongPair) return;
+
+            if (side === 'right') {
+                state.selectedRightId = (state.selectedRightId === id) ? null : id;
+            } else {
+                state.selectedLeftId = (state.selectedLeftId === id) ? null : id;
+            }
+
+            if (state.selectedRightId && state.selectedLeftId) {
+                if (state.selectedRightId === state.selectedLeftId) {
+                    state.matchedIds.push(state.selectedRightId);
+                    state.selectedRightId = null;
+                    state.selectedLeftId = null;
+                    const totalPairs = DAYS_DATA[state.selectedDayIndex].matchingPairs.length;
+                    playSuccessSound(state.matchedIds.length === totalPairs ? 'complete' : 'match');
+                } else {
+                    state.wrongPair = true;
+                    state.matchingMistakes++;
+                    render();
+                    setTimeout(() => {
+                        state.selectedRightId = null;
+                        state.selectedLeftId = null;
+                        state.wrongPair = false;
+                        render();
+                    }, 550);
+                    return;
+                }
+            }
+            render();
+        }
+
+        function selectQuizOption(index) {
+            if (state.isAnswerChecked) return;
+            state.selectedOptionIndex = index;
+            state.isAnswerChecked = true;
+
+            const currentQ = DAYS_DATA[state.selectedDayIndex].quiz[state.quizIndex];
+            const totalQ = DAYS_DATA[state.selectedDayIndex].quiz.length;
+            const isCorrect = (index === currentQ.correctIndex);
+
+            if (isCorrect) {
+                state.quizScore++;
+                playSuccessSound('match');
+            }
+
+            render();
+            showQuizFeedbackPopup(isCorrect, currentQ.explanation, state.quizIndex === totalQ - 1);
+        }
+
+        function showQuizFeedbackPopup(isCorrect, explanation, isLastQuestion) {
+            const modal = document.getElementById('feedback-modal');
+            const card = document.getElementById('feedback-modal-card');
+            
+            card.className = `bg-white rounded-3xl max-w-sm w-full p-5 shadow-2xl border-2 text-center space-y-3 animate-pop ${
+                isCorrect ? 'border-emerald-400' : 'border-amber-400'
+            }`;
+
+            card.innerHTML = `
+                <div class="w-12 h-12 mx-auto rounded-full flex items-center justify-center text-2xl ${
+                    isCorrect ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'
+                }">
+                    ${isCorrect ? '✓' : '💡'}
+                </div>
+                <h4 class="text-lg font-extrabold ${isCorrect ? 'text-emerald-800' : 'text-amber-800'}">
+                    ${isCorrect ? 'מעולה! תשובה נכונה 👏' : 'בואו נבדוק יחד'}
+                </h4>
+                <p class="text-sm text-slate-700 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-100">
+                    ${explanation}
+                </p>
+                <button onclick="nextQuizQuestion()" class="w-full py-3 rounded-xl font-bold text-sm text-white shadow-md transition ${
+                    isCorrect ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-indigo-600 hover:bg-indigo-700'
+                }">
+                    ${isLastQuestion ? 'מסיימים ורואים ציון ←' : 'ממשיכים לשאלה הבאה ←'}
+                </button>
+            `;
+            modal.classList.remove('hidden');
+        }
+
+        function nextQuizQuestion() {
+            closeFeedbackModal();
+            const totalQ = DAYS_DATA[state.selectedDayIndex].quiz.length;
+            if (state.quizIndex < totalQ - 1) {
+                state.quizIndex++;
+                state.selectedOptionIndex = null;
+                state.isAnswerChecked = false;
+                render();
+            } else {
+                const dayNum = DAYS_DATA[state.selectedDayIndex].dayNumber;
+                const finalPercent = Math.round((state.quizScore / totalQ) * 100);
+                state.completedDays[dayNum] = {
+                    completed: true,
+                    score: finalPercent
+                };
+                localStorage.setItem('arabicPrepProgress_v2', JSON.stringify(state.completedDays));
+                playSuccessSound('complete');
+                switchTab('summary');
+            }
+        }
+
+        function render() {
+            const container = document.getElementById('app-container');
+            if (state.currentView === 'home') {
+                container.innerHTML = renderHomeView();
+            } else {
+                container.innerHTML = renderDayView();
+            }
+        }
+
+        // מסך הבית קומפקטי מותאם למסך יחיד בנייד
+        function renderHomeView() {
+            const completedCount = Object.keys(state.completedDays).length;
+            const progressPercent = Math.round((completedCount / DAYS_DATA.length) * 100);
+
+            let cardsHtml = DAYS_DATA.map((day, idx) => {
+                const status = state.completedDays[day.dayNumber];
+                const isDone = status && status.completed;
+
+                return `
+                    <div onclick="startDay(${idx})" class="bg-white rounded-xl shadow-xs hover:shadow-md border border-slate-200/90 px-3.5 py-2.5 transition-all cursor-pointer group flex items-center justify-between relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-1.5 h-full bg-gradient-to-b ${day.badgeColor}"></div>
+                        <div class="pr-2 min-w-0">
+                            <div class="flex items-center gap-2 mb-0.5">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold text-white bg-gradient-to-l ${day.badgeColor}">
+                                    יום ${day.dayNumber}
+                                </span>
+                                <span class="text-[11px] text-slate-400">⏱️ ${day.duration}</span>
+                            </div>
+                            <h3 class="text-sm font-bold text-slate-800 group-hover:text-indigo-700 truncate">
+                                ${day.title}
+                            </h3>
+                            <p class="text-xs text-slate-500 truncate arabic-text">
+                                ${day.subtitle}
+                            </p>
+                        </div>
+
+                        <div class="shrink-0 mr-2">
+                            ${isDone ? `
+                                <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-lg block">
+                                    ${status.score}% ✓
+                                </span>
+                            ` : `
+                                <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1.5 rounded-lg block">
+                                    מתחילים ←
+                                </span>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            return `
+                <div class="h-full flex flex-col justify-between gap-2">
+                    <!-- מד התקדמות קומפקטי -->
+                    <div class="bg-white rounded-xl p-3 shadow-xs border border-slate-200/80 shrink-0">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <div>
+                                <h2 class="text-base font-extrabold text-slate-800 leading-tight">בוחרים יום תרגול</h2>
+                                <p class="text-slate-500 text-xs">כרטיסיות • חיבור קוביות • שאלות אמריקאיות</p>
+                            </div>
+                            <div class="bg-indigo-50 border border-indigo-100 px-2.5 py-1 rounded-lg text-center">
+                                <div class="text-xs font-extrabold text-indigo-800">${completedCount}/5 ימים</div>
+                            </div>
+                        </div>
+                        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                            <div class="bg-gradient-to-l from-indigo-600 to-teal-500 h-full transition-all duration-500 rounded-full" style="width: ${progressPercent}%"></div>
+                        </div>
+                    </div>
+
+                    <!-- רשימת 5 הימים מותאמת לגובה ללא גלילה -->
+                    <div class="flex-1 min-h-0 flex flex-col justify-evenly gap-1.5">
+                        ${cardsHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        // תצוגת יום פעיל מותאמת לגובה מסך יחיד
+        function renderDayView() {
+            const dayData = DAYS_DATA[state.selectedDayIndex];
+            const tabs = [
+                { id: 'flashcards', label: '1. כרטיסיות', icon: '🗂️' },
+                { id: 'matching', label: '2. קוביות', icon: '🧩' },
+                { id: 'quiz', label: '3. שאלות', icon: '❓' }
+            ];
+
+            let tabsHtml = tabs.map(t => {
+                const isActive = state.activeTab === t.id;
+                return `
+                    <button onclick="switchTab('${t.id}')" class="flex-1 py-2 px-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1 ${
+                        isActive 
+                        ? 'bg-indigo-600 text-white shadow-xs' 
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200/70'
+                    }">
+                        <span>${t.icon}</span>
+                        <span>${t.label}</span>
+                    </button>
+                `;
+            }).join('');
+
+            let stageContent = '';
+            if (state.activeTab === 'flashcards') {
+                stageContent = renderFlashcardsStage(dayData);
+            } else if (state.activeTab === 'matching') {
+                stageContent = renderMatchingStage(dayData);
+            } else if (state.activeTab === 'quiz') {
+                stageContent = renderQuizStage(dayData);
+            } else if (state.activeTab === 'summary') {
+                stageContent = renderSummaryStage(dayData);
+            }
+
+            return `
+                <div class="h-full flex flex-col justify-between gap-2">
+                    <!-- כותרת וסרגל שלבים קומפקטי -->
+                    <div class="bg-white rounded-xl p-2.5 shadow-xs border border-slate-200/80 shrink-0">
+                        <div class="flex items-center justify-between mb-2">
+                            <h2 class="text-sm sm:text-base font-extrabold text-slate-800 truncate">${dayData.title}</h2>
+                        </div>
+                        ${state.activeTab !== 'summary' ? `
+                            <div class="flex gap-1.5">
+                                ${tabsHtml}
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <!-- אזור התרגול הפעיל שתופס את שאר גובה המסך -->
+                    <div class="flex-1 min-h-0 flex flex-col justify-between">
+                        ${stageContent}
+                    </div>
+                </div>
+            `;
+        }
+
+        // שלב 1: כרטיסיות זיכרון גדולות מתהפכות (מותאם לגובה ללא גלילה)
+        function renderFlashcardsStage(dayData) {
+            const card = dayData.flashcards[state.cardIndex];
+            const total = dayData.flashcards.length;
+
+            return `
+                <div class="h-full max-w-xl w-full mx-auto flex flex-col justify-between gap-2 py-1">
+                    <div class="flex items-center justify-between text-xs font-semibold text-slate-600 px-1 shrink-0">
+                        <span>כרטיסייה ${state.cardIndex + 1} מתוך ${total}</span>
+                        <span class="text-indigo-600">לוחצים על הכרטיסייה להיפוך ↻</span>
+                    </div>
+
+                    <!-- כרטיסייה מתהפכת גמישה בגובה -->
+                    <div onclick="toggleCardFlip()" class="perspective-1000 flex-1 min-h-0 w-full cursor-pointer">
+                        <div class="relative w-full h-full transform-style-3d ${state.isCardFlipped ? 'rotate-y-180' : ''}">
+                            
+                            <!-- צד קדמי: ערבית בגדול -->
+                            <div class="absolute inset-0 backface-hidden bg-white rounded-2xl shadow-sm border-2 border-indigo-100 flex flex-col items-center justify-center p-4 text-center hover:border-indigo-300 transition">
+                                <span class="text-[11px] font-bold text-slate-400 bg-slate-100 px-2.5 py-0.5 rounded-full mb-2">ערבית</span>
+                                <div class="arabic-text text-6xl sm:text-7xl font-extrabold text-slate-800 my-1 select-none">
+                                    ${card.front}
+                                </div>
+                                <p class="text-xs text-slate-400 mt-3">מנסים להיזכר ולוחצים לבדיקה</p>
+                            </div>
+
+                            <!-- צד אחורי: שם האות / תרגום לעברית -->
+                            <div class="absolute inset-0 backface-hidden rotate-y-180 bg-gradient-to-br from-indigo-600 to-blue-700 text-white rounded-2xl shadow-md flex flex-col items-center justify-center p-4 text-center">
+                                <span class="text-[11px] font-bold text-indigo-200 bg-white/15 px-2.5 py-0.5 rounded-full mb-2">תשובה בעברית</span>
+                                <div class="text-2xl sm:text-3xl font-extrabold mb-2">
+                                    ${card.back}
+                                </div>
+                                ${card.hint ? `
+                                    <div class="bg-white/15 backdrop-blur-xs rounded-xl px-3 py-2 text-xs text-blue-50 max-w-sm mt-1">
+                                        💡 ${card.hint}
+                                    </div>
+                                ` : ''}
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- כפתורי ניווט תחתונים -->
+                    <div class="flex items-center justify-between gap-2 shrink-0 pt-1">
+                        <button onclick="prevCard()" ${state.cardIndex === 0 ? 'disabled' : ''} class="px-4 py-2.5 rounded-xl font-bold text-xs border border-slate-300 bg-white text-slate-700 disabled:opacity-40 hover:bg-slate-50 transition">
+                            → הקודם
+                        </button>
+                        
+                        <button onclick="toggleCardFlip()" class="px-4 py-2.5 rounded-xl font-bold text-xs bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition">
+                            הופכים ↻
+                        </button>
+
+                        <button onclick="nextCard()" class="px-4 py-2.5 rounded-xl font-bold text-xs bg-indigo-600 text-white hover:bg-indigo-700 shadow-xs transition">
+                            ${state.cardIndex === total - 1 ? 'לקוביות ←' : 'הבא ←'}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // שלב 2: חיבור קוביות בין טורים (מותאם לגובה מסך יחיד ללא גלילה)
+        function renderMatchingStage(dayData) {
+            const allMatched = state.matchedIds.length === dayData.matchingPairs.length;
+
+            let rightColHtml = state.matchingRightItems.map(item => {
+                const isMatched = state.matchedIds.includes(item.id);
+                const isSelected = state.selectedRightId === item.id;
+                const isError = isSelected && state.wrongPair;
+
+                let btnStyle = "bg-white border-slate-200 text-slate-800 hover:border-indigo-400";
+                if (isMatched) {
+                    btnStyle = "bg-emerald-50 border-emerald-400 text-emerald-700 opacity-55 cursor-default animate-pop";
+                } else if (isError) {
+                    btnStyle = "bg-rose-50 border-rose-500 text-rose-700 animate-shake";
+                } else if (isSelected) {
+                    btnStyle = "bg-indigo-50 border-indigo-600 text-indigo-800 ring-2 ring-indigo-300";
+                }
+
+                return `
+                    <button onclick="selectMatchingItem('right', '${item.id}')" ${isMatched ? 'disabled' : ''} class="flex-1 w-full px-2 rounded-xl border-2 font-bold transition-all shadow-2xs flex items-center justify-center ${btnStyle}">
+                        <span class="arabic-text text-2xl sm:text-3xl leading-none">${item.text}</span>
+                    </button>
+                `;
+            }).join('');
+
+            let leftColHtml = state.matchingLeftItems.map(item => {
+                const isMatched = state.matchedIds.includes(item.id);
+                const isSelected = state.selectedLeftId === item.id;
+                const isError = isSelected && state.wrongPair;
+
+                let btnStyle = "bg-white border-slate-200 text-slate-800 hover:border-indigo-400";
+                if (isMatched) {
+                    btnStyle = "bg-emerald-50 border-emerald-400 text-emerald-700 opacity-55 cursor-default animate-pop";
+                } else if (isError) {
+                    btnStyle = "bg-rose-50 border-rose-500 text-rose-700 animate-shake";
+                } else if (isSelected) {
+                    btnStyle = "bg-indigo-50 border-indigo-600 text-indigo-800 ring-2 ring-indigo-300";
+                }
+
+                return `
+                    <button onclick="selectMatchingItem('left', '${item.id}')" ${isMatched ? 'disabled' : ''} class="flex-1 w-full px-2 rounded-xl border-2 font-bold text-xs sm:text-sm transition-all shadow-2xs flex items-center justify-center text-center leading-tight ${btnStyle}">
+                        <span>${item.text}</span>
+                    </button>
+                `;
+            }).join('');
+
+            return `
+                <div class="h-full max-w-2xl w-full mx-auto flex flex-col justify-between gap-1.5">
+                    <div class="bg-blue-50 border border-blue-100 rounded-xl px-3 py-1.5 flex items-center justify-between shrink-0">
+                        <p class="text-xs font-medium text-blue-900">
+                            מחברים בין <strong>ערבית (ימין)</strong> ל<strong>עברית (שמאל)</strong>
+                        </p>
+                        <span class="text-[11px] font-bold bg-white text-blue-700 px-2 py-0.5 rounded-lg shadow-2xs shrink-0">
+                            ${state.matchedIds.length} / ${dayData.matchingPairs.length}
+                        </span>
+                    </div>
+
+                    ${allMatched ? `
+                        <div class="flex-1 bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-5 flex flex-col items-center justify-center text-center space-y-3 animate-pop">
+                            <div class="text-4xl">🎉</div>
+                            <h3 class="text-xl font-extrabold text-emerald-800">כל הכבוד! חיברתם את כל הזוגות!</h3>
+                            <p class="text-emerald-700 text-xs sm:text-sm">ממשיכים לשלב השלישי: שאלות אמריקאיות.</p>
+                            <div class="pt-1 flex justify-center gap-2">
+                                <button onclick="initMatchingGame(DAYS_DATA[${state.selectedDayIndex}].matchingPairs); render();" class="px-4 py-2.5 rounded-xl font-bold text-xs bg-white text-emerald-700 border border-emerald-300 hover:bg-emerald-100 transition">
+                                    שוב ↻
+                                </button>
+                                <button onclick="switchTab('quiz')" class="px-5 py-2.5 rounded-xl font-bold text-xs bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm transition">
+                                    לשאלות אמריקאיות ←
+                                </button>
+                            </div>
+                        </div>
+                    ` : `
+                        <div class="flex-1 min-h-0 grid grid-cols-2 gap-2.5 sm:gap-4 pb-1">
+                            <div class="flex flex-col gap-1.5 min-h-0">
+                                ${rightColHtml}
+                            </div>
+                            <div class="flex flex-col gap-1.5 min-h-0">
+                                ${leftColHtml}
+                            </div>
+                        </div>
+                    `}
+                </div>
+            `;
+        }
+
+        // שלב 3: שאלות אמריקאיות (קומפקטי, המשוב קופץ ב-Modal כדי שלא תהיה גלילה)
+        function renderQuizStage(dayData) {
+            const q = dayData.quiz[state.quizIndex];
+            const totalQ = dayData.quiz.length;
+
+            let optionsHtml = q.options.map((opt, idx) => {
+                let btnClasses = "bg-white border-slate-200 text-slate-800 hover:border-indigo-400 hover:bg-indigo-50/40";
+                let badge = `<span class="w-6 h-6 rounded-md bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center shrink-0">${idx + 1}</span>`;
+
+                if (state.isAnswerChecked) {
+                    if (idx === q.correctIndex) {
+                        btnClasses = "bg-emerald-50 border-emerald-500 text-emerald-900";
+                        badge = `<span class="w-6 h-6 rounded-md bg-emerald-500 text-white font-bold text-xs flex items-center justify-center shrink-0">✓</span>`;
+                    } else if (idx === state.selectedOptionIndex) {
+                        btnClasses = "bg-rose-50 border-rose-500 text-rose-900";
+                        badge = `<span class="w-6 h-6 rounded-md bg-rose-500 text-white font-bold text-xs flex items-center justify-center shrink-0">✕</span>`;
+                    } else {
+                        btnClasses = "bg-slate-50 border-slate-200 text-slate-400 opacity-60";
+                    }
+                }
+
+                const hasArabic = /[\u0600-\u06FF]/.test(opt);
+
+                return `
+                    <button onclick="selectQuizOption(${idx})" ${state.isAnswerChecked ? 'disabled' : ''} class="flex-1 w-full px-3 py-2 rounded-xl border-2 text-right font-bold transition-all flex items-center gap-2.5 shadow-2xs ${btnClasses}">
+                        ${badge}
+                        <span class="${hasArabic ? 'arabic-text text-xl sm:text-2xl leading-none' : 'text-xs sm:text-sm leading-tight'}">${opt}</span>
+                    </button>
+                `;
+            }).join('');
+
+            return `
+                <div class="h-full max-w-2xl w-full mx-auto flex flex-col justify-between gap-2 pb-1">
+                    <div class="flex items-center justify-between text-xs font-semibold text-slate-600 px-1 shrink-0">
+                        <span>שאלה ${state.quizIndex + 1} מתוך ${totalQ}</span>
+                        <span class="bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full">ניקוד: ${state.quizScore}</span>
+                    </div>
+
+                    <div class="flex-1 min-h-0 bg-white rounded-2xl p-3.5 sm:p-5 shadow-xs border border-slate-200/80 flex flex-col justify-between text-center">
+                        <div class="shrink-0 space-y-2">
+                            <h3 class="text-sm sm:text-base font-bold text-slate-800 leading-snug">
+                                ${q.question}
+                            </h3>
+                            
+                            ${q.arabicDisplay && q.arabicDisplay !== '؟' ? `
+                                <div class="inline-block bg-slate-50 border border-slate-200/80 rounded-xl px-5 py-1.5">
+                                    <span class="arabic-text text-3xl sm:text-4xl font-extrabold text-indigo-900">
+                                        ${q.arabicDisplay}
+                                    </span>
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <!-- אפשרויות בחירה מרווחות לגובה המסך -->
+                        <div class="flex-1 min-h-0 flex flex-col justify-center gap-2 pt-2 text-right">
+                            ${optionsHtml}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // מסך סיכום יום תרגול
+        function renderSummaryStage(dayData) {
+            const totalQ = dayData.quiz.length;
+            const percent = Math.round((state.quizScore / totalQ) * 100);
+            const hasNextDay = state.selectedDayIndex < DAYS_DATA.length - 1;
+
+            let feedbackTitle = "עבודה נהדרת!";
+            let feedbackMsg = "סיימתם בהצלחה את כל שלושת חלקי התרגול של היום.";
+            if (percent === 100) {
+                feedbackTitle = "ציון מושלם! אלופים! 🏆";
+                feedbackMsg = "שליטה מלאה באותיות, בתנועות ובאוצר המילים של היום.";
+            } else if (percent >= 70) {
+                feedbackTitle = "כל הכבוד! התקדמות מעולה 🌟";
+                feedbackMsg = "אתם בדרך הנכונה להצלחה במבחן.";
+            } else {
+                feedbackTitle = "התחלה טובה! 💪";
+                feedbackMsg = "מומלץ לעבור שוב על הכרטיסיות ולנסות את החידון פעם נוספת.";
+            }
+
+            return `
+                <div class="h-full max-w-xl w-full mx-auto bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col items-center justify-center text-center space-y-4 animate-pop">
+                    <div class="w-14 h-14 mx-auto rounded-full bg-indigo-50 flex items-center justify-center text-3xl">
+                        🎯
+                    </div>
+                    <div>
+                        <span class="text-xs font-bold text-indigo-600 uppercase">סיכום יום ${dayData.dayNumber}</span>
+                        <h3 class="text-xl sm:text-2xl font-extrabold text-slate-800 mt-1">${feedbackTitle}</h3>
+                        <p class="text-slate-600 text-xs sm:text-sm mt-1">${feedbackMsg}</p>
+                    </div>
+
+                    <div class="w-full bg-slate-50 rounded-xl p-3.5 border border-slate-200/80 flex justify-around">
+                        <div>
+                            <div class="text-[11px] text-slate-500 font-semibold">תשובות נכונות</div>
+                            <div class="text-xl font-extrabold text-slate-800">${state.quizScore} / ${totalQ}</div>
+                        </div>
+                        <div class="w-px bg-slate-200"></div>
+                        <div>
+                            <div class="text-[11px] text-slate-500 font-semibold">ציון בחידון</div>
+                            <div class="text-xl font-extrabold text-indigo-600">${percent}%</div>
+                        </div>
+                    </div>
+
+                    <div class="w-full flex flex-col sm:flex-row gap-2 justify-center pt-1">
+                        <button onclick="switchTab('flashcards')" class="px-4 py-3 rounded-xl font-bold text-xs bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+                            מתרגלים יום זה שוב ↻
+                        </button>
+                        ${hasNextDay ? `
+                            <button onclick="startDay(${state.selectedDayIndex + 1})" class="px-5 py-3 rounded-xl font-bold text-xs bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm transition">
+                                עוברים ליום ${dayData.dayNumber + 1} ←
+                            </button>
+                        ` : `
+                            <button onclick="goHome()" class="px-5 py-3 rounded-xl font-bold text-xs bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm transition">
+                                חזרה למסך הראשי ✓
+                            </button>
+                        `}
+                    </div>
+                </div>
+            `;
+        }
+
+        // הפעלה ראשונית בטעינת העמוד
+        window.onload = function() {
+            render();
+        };
+    </script>
+</body>
+</html>
+```
